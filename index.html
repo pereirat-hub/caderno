@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Caderno de Respostas</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&family=Lora:wght@500;600&display=swap" rel="stylesheet">
-<script src="https://accounts.google.com/gsi/client" async defer></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -23,7 +22,6 @@ body{font-family:'DM Sans',sans-serif;color:var(--text);background:var(--bg);hei
 .btn-top{font-size:13px;padding:6px 14px;border-radius:var(--radius-sm);background:rgba(255,255,255,0.15);color:#fff;border:1px solid rgba(255,255,255,0.25);cursor:pointer;font-family:'DM Sans',sans-serif}
 .btn-top:hover{background:rgba(255,255,255,0.22)}
 .btn-top.solid{background:#fff;color:var(--accent);border-color:#fff}
-.btn-top.solid:hover{background:rgba(255,255,255,0.9)}
 .drive-chip{font-size:12px;padding:5px 11px;border-radius:var(--radius-sm);background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.75);border:none;cursor:pointer;display:flex;align-items:center;gap:7px;font-family:'DM Sans',sans-serif}
 .drive-chip:hover{background:rgba(255,255,255,0.18)}
 .drive-chip.connected{color:#fff}
@@ -95,15 +93,25 @@ textarea::placeholder{color:var(--text-faint)}
 .modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:4px}
 .google-btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:10px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface);color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;cursor:pointer;margin-bottom:8px}
 .google-btn:hover{background:var(--bg);border-color:var(--border-strong)}
-.google-icon{width:18px;height:18px;flex-shrink:0}
 .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--accent);color:#fff;border-radius:var(--radius-sm);padding:8px 18px;font-size:13px;z-index:9999;white-space:nowrap;font-family:'DM Sans',sans-serif}
 @media print{
-  .topbar,.tabs,.editor-actions,.view-actions{display:none!important}
-  .view-wrap{display:block!important;height:auto!important}
-  .view-left,.view-right{width:50%;float:left;border:none;padding:20px}
+  *{overflow:visible!important;height:auto!important;max-height:none!important}
+  .topbar,.tabs,.editor-actions,.view-actions,.overlay{display:none!important}
   .view-empty{display:none!important}
-  body{height:auto;overflow:visible}
-  .panel.active{overflow:visible}
+  body{height:auto;overflow:visible;background:#fff}
+  .app{height:auto;display:block}
+  .content{display:block;height:auto}
+  .panel{display:none!important}
+  #panel-view{display:block!important}
+  .view-wrap{display:block!important;height:auto!important;border:none}
+  .view-left{width:100%!important;float:none!important;border:none!important;border-bottom:1pt solid #ccc!important;padding:0 0 24pt 0!important;margin-bottom:24pt!important;background:#fff}
+  .view-right{width:100%!important;float:none!important;border:none!important;padding:0!important;background:#fff}
+  .view-title{font-size:16pt;margin-bottom:8pt}
+  .view-label{font-size:9pt;margin-bottom:8pt;padding-bottom:4pt}
+  .view-enunciado{font-size:12pt;line-height:1.8}
+  .view-resposta{font-size:12pt;line-height:1.8;text-align:justify}
+  .view-tag-row{margin-bottom:12pt}
+  .view-left,.view-right{page-break-inside:avoid}
 }
 </style>
 </head>
@@ -191,10 +199,10 @@ textarea::placeholder{color:var(--text-faint)}
   <div class="overlay" id="driveOverlay" style="display:none">
     <div class="modal">
       <h2>Conectar ao Google Drive</h2>
-      <p>Faça login com sua conta Google para sincronizar suas respostas automaticamente entre todos os seus dispositivos.</p>
-      <div class="modal-hint">Seus dados ficam salvos em um arquivo <strong>caderno_respostas.json</strong> no seu Google Drive, visível só para você.</div>
+      <p>Você será redirecionado para o login do Google. Funciona em qualquer navegador.</p>
+      <div class="modal-hint">Seus dados ficam salvos em <strong>caderno_respostas.json</strong> no seu Drive, visível só para você.</div>
       <button class="google-btn" onclick="signInWithGoogle()">
-        <svg class="google-icon" viewBox="0 0 24 24">
+        <svg width="18" height="18" viewBox="0 0 24 24">
           <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
           <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
           <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/>
@@ -208,7 +216,7 @@ textarea::placeholder{color:var(--text-faint)}
     </div>
   </div>
 
-  <!-- Modal: gerenciar conexão -->
+  <!-- Modal: gerenciar -->
   <div class="overlay" id="disconnectOverlay" style="display:none">
     <div class="modal">
       <h2>Google Drive conectado</h2>
@@ -227,7 +235,7 @@ textarea::placeholder{color:var(--text-faint)}
 
 <script>
 const CLIENT_ID = '178420623621-k8j1oq63advvpq3qjko5ru95574ju9nu.apps.googleusercontent.com';
-const SCOPES = 'https://www.googleapis.com/auth/drive.file';
+const SCOPES = 'https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/userinfo.email';
 const FILE_NAME = 'caderno_respostas.json';
 
 let entries = JSON.parse(localStorage.getItem('qr_entries') || '[]');
@@ -235,46 +243,65 @@ let currentId = null;
 let accessToken = null;
 let tokenExpiry = 0;
 let userEmail = localStorage.getItem('qr_user_email') || null;
-let tokenClient = null;
-let pendingAction = null;
 
-window.onload = function() {
+window.onload = async function() {
+  await handleOAuthCallback();
   if (userEmail) updateDriveUI('connected');
   renderList();
-  initTokenClient();
 };
 
-function isTokenValid() {
-  return accessToken && Date.now() < tokenExpiry - 60000;
+async function handleOAuthCallback() {
+  const hash = window.location.hash;
+  if (!hash || !hash.includes('access_token')) return;
+  const params = new URLSearchParams(hash.replace(/^#/, ''));
+  const token = params.get('access_token');
+  const expiresIn = params.get('expires_in');
+  const state = params.get('state') || 'sync';
+  if (!token) return;
+  accessToken = token;
+  tokenExpiry = Date.now() + (parseInt(expiresIn) || 3600) * 1000;
+  localStorage.setItem('qr_token', token);
+  localStorage.setItem('qr_token_expiry', String(tokenExpiry));
+  history.replaceState(null, '', location.pathname);
+  await fetchUserInfo();
+  updateDriveUI('connected');
+  toast('Drive conectado! Sincronizando...');
+  if (state === 'load') {
+    await loadFromDrive();
+  } else {
+    await syncToDrive();
+  }
 }
 
-function initTokenClient() {
-  if (!window.google) { setTimeout(initTokenClient, 500); return; }
-  tokenClient = google.accounts.oauth2.initTokenClient({
+function getStoredToken() {
+  const t = localStorage.getItem('qr_token');
+  const exp = parseInt(localStorage.getItem('qr_token_expiry') || '0');
+  if (t && Date.now() < exp - 60000) return { token: t, expiry: exp };
+  return null;
+}
+
+function ensureToken(state) {
+  const stored = getStoredToken();
+  if (stored) {
+    accessToken = stored.token;
+    tokenExpiry = stored.expiry;
+    return true;
+  }
+  localStorage.setItem('qr_pending_state', state || 'sync');
+  redirectToGoogle(state || 'sync');
+  return false;
+}
+
+function redirectToGoogle(state) {
+  const redirectUri = location.origin + location.pathname;
+  const params = new URLSearchParams({
     client_id: CLIENT_ID,
+    redirect_uri: redirectUri,
+    response_type: 'token',
     scope: SCOPES,
-    callback: async (resp) => {
-      if (resp.error) { toast('Erro ao conectar: ' + resp.error); updateDriveUI('error'); return; }
-      accessToken = resp.access_token;
-      tokenExpiry = Date.now() + (resp.expires_in || 3600) * 1000;
-      if (!userEmail) {
-        await fetchUserInfo();
-        closeDriveModal();
-        updateDriveUI('connected');
-        toast('Drive conectado! Sincronizando...');
-        await syncToDrive();
-      } else {
-        updateDriveUI('connected');
-        if (pendingAction) { const a = pendingAction; pendingAction = null; await a(); }
-      }
-    }
+    state: state || 'sync'
   });
-}
-
-async function ensureToken(action) {
-  if (isTokenValid()) { await action(); return; }
-  pendingAction = action;
-  tokenClient.requestAccessToken({ prompt: '' });
+  window.location.href = 'https://accounts.google.com/o/oauth2/v2/auth?' + params.toString();
 }
 
 async function fetchUserInfo() {
@@ -288,14 +315,11 @@ async function fetchUserInfo() {
   } catch(e) { userEmail = 'Conta Google'; }
 }
 
-function signInWithGoogle() {
-  if (!tokenClient) { toast('Aguarde, carregando...'); initTokenClient(); return; }
-  tokenClient.requestAccessToken({ prompt: 'consent' });
-}
+function signInWithGoogle() { redirectToGoogle('sync'); }
 
 function handleDriveClick() {
-  if (accessToken) {
-    document.getElementById('connectedUser').textContent = 'Conectado como: ' + (userEmail || 'Conta Google');
+  if (userEmail) {
+    document.getElementById('connectedUser').textContent = 'Conectado como: ' + userEmail;
     document.getElementById('disconnectOverlay').style.display = 'flex';
   } else {
     document.getElementById('driveOverlay').style.display = 'flex';
@@ -306,9 +330,9 @@ function closeDriveModal() { document.getElementById('driveOverlay').style.displ
 function closeDisconnectModal() { document.getElementById('disconnectOverlay').style.display = 'none'; }
 
 function disconnectDrive() {
-  if (window.google && accessToken) google.accounts.oauth2.revoke(accessToken);
-  accessToken = null; userEmail = null;
-  localStorage.removeItem('qr_access_token');
+  accessToken = null; tokenExpiry = 0; userEmail = null;
+  localStorage.removeItem('qr_token');
+  localStorage.removeItem('qr_token_expiry');
   localStorage.removeItem('qr_user_email');
   updateDriveUI('disconnected');
   closeDisconnectModal();
@@ -330,7 +354,7 @@ function updateDriveUI(state) {
     chip.className = 'drive-chip connected';
   } else if (state === 'error') {
     dot.classList.add('error');
-    label.textContent = 'Erro no Drive';
+    label.textContent = 'Erro — reconectar';
     chip.className = 'drive-chip';
   } else {
     label.textContent = 'Conectar Drive';
@@ -348,8 +372,9 @@ async function getFileId() {
 }
 
 async function syncToDrive() {
-  if (!accessToken) return;
+  if (!userEmail) return;
   closeDisconnectModal();
+  if (!ensureToken('sync')) return;
   updateDriveUI('syncing');
   try {
     const content = JSON.stringify(entries, null, 2);
@@ -364,7 +389,13 @@ async function syncToDrive() {
       ? `https://www.googleapis.com/upload/drive/v3/files/${existingId}?uploadType=multipart`
       : `https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart`;
     const r = await fetch(url, { method, headers: { Authorization: 'Bearer ' + accessToken }, body: form });
-    if (!r.ok) throw new Error();
+    if (r.status === 401) {
+      localStorage.removeItem('qr_token');
+      localStorage.removeItem('qr_token_expiry');
+      redirectToGoogle('sync');
+      return;
+    }
+    if (!r.ok) throw new Error('status ' + r.status);
     updateDriveUI('connected');
     toast('Salvo no Drive ✓');
   } catch(e) {
@@ -374,8 +405,9 @@ async function syncToDrive() {
 }
 
 async function loadFromDrive() {
-  if (!accessToken) return;
+  if (!userEmail) return;
   closeDisconnectModal();
+  if (!ensureToken('load')) return;
   updateDriveUI('syncing');
   try {
     const fileId = await getFileId();
@@ -384,6 +416,12 @@ async function loadFromDrive() {
       `https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`,
       { headers: { Authorization: 'Bearer ' + accessToken } }
     );
+    if (r.status === 401) {
+      localStorage.removeItem('qr_token');
+      localStorage.removeItem('qr_token_expiry');
+      redirectToGoogle('load');
+      return;
+    }
     if (!r.ok) throw new Error();
     entries = await r.json();
     localStorage.setItem('qr_entries', JSON.stringify(entries));
@@ -502,7 +540,7 @@ function deleteEntry() {
 
 function persist() {
   localStorage.setItem('qr_entries', JSON.stringify(entries));
-  if (accessToken) syncToDrive();
+  if (userEmail) syncToDrive();
 }
 
 function printCurrent() { window.print(); }

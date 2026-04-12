@@ -232,15 +232,21 @@ const FILE_NAME = 'caderno_respostas.json';
 
 let entries = JSON.parse(localStorage.getItem('qr_entries') || '[]');
 let currentId = null;
-let accessToken = localStorage.getItem('qr_access_token') || null;
+let accessToken = null;
+let tokenExpiry = 0;
 let userEmail = localStorage.getItem('qr_user_email') || null;
 let tokenClient = null;
+let pendingAction = null;
 
 window.onload = function() {
-  if (accessToken && userEmail) updateDriveUI('connected');
+  if (userEmail) updateDriveUI('connected');
   renderList();
   initTokenClient();
 };
+
+function isTokenValid() {
+  return accessToken && Date.now() < tokenExpiry - 60000;
+}
 
 function initTokenClient() {
   if (!window.google) { setTimeout(initTokenClient, 500); return; }
@@ -248,16 +254,27 @@ function initTokenClient() {
     client_id: CLIENT_ID,
     scope: SCOPES,
     callback: async (resp) => {
-      if (resp.error) { toast('Erro ao conectar: ' + resp.error); return; }
+      if (resp.error) { toast('Erro ao conectar: ' + resp.error); updateDriveUI('error'); return; }
       accessToken = resp.access_token;
-      localStorage.setItem('qr_access_token', accessToken);
-      await fetchUserInfo();
-      closeDriveModal();
-      updateDriveUI('connected');
-      toast('Drive conectado! Sincronizando...');
-      await syncToDrive();
+      tokenExpiry = Date.now() + (resp.expires_in || 3600) * 1000;
+      if (!userEmail) {
+        await fetchUserInfo();
+        closeDriveModal();
+        updateDriveUI('connected');
+        toast('Drive conectado! Sincronizando...');
+        await syncToDrive();
+      } else {
+        updateDriveUI('connected');
+        if (pendingAction) { const a = pendingAction; pendingAction = null; await a(); }
+      }
     }
   });
+}
+
+async function ensureToken(action) {
+  if (isTokenValid()) { await action(); return; }
+  pendingAction = action;
+  tokenClient.requestAccessToken({ prompt: '' });
 }
 
 async function fetchUserInfo() {

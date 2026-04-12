@@ -154,7 +154,7 @@ textarea::placeholder{color:var(--text-faint)}
           </div>
           <div class="editor-meta">
             <div class="editor-label">Tag / assunto</div>
-            <input type="text" id="editTag" placeholder="Ex: Direito Constitucional">
+            <input type="text" id="editTag" placeholder="Ex: Constitucional; Processo Civil; Administrativo">
           </div>
           <div class="editor-label">Enunciado</div>
           <textarea id="editEnunciado" placeholder="Cole ou escreva a pergunta/enunciado aqui..."></textarea>
@@ -444,6 +444,12 @@ function showTab(t) {
   if (t === 'list') renderList();
 }
 
+function renderTags(tag) {
+  if (!tag) return '';
+  return tag.split(';').map(t => t.trim()).filter(Boolean)
+    .map(t => `<span class="badge badge-tag">${esc(t)}</span>`).join('');
+}
+
 function renderList() {
   const q = document.getElementById('searchInput').value.toLowerCase();
   const body = document.getElementById('listBody');
@@ -460,7 +466,7 @@ function renderList() {
       <div class="card-title">${esc(e.title) || '(sem título)'}</div>
       <div class="card-preview">${esc(e.enunciado).slice(0, 120)}${e.enunciado.length > 120 ? '…' : ''}</div>
       <div class="card-meta">
-        ${e.tag ? `<span class="badge badge-tag">${esc(e.tag)}</span>` : ''}
+        ${renderTags(e.tag)}
         <span class="badge ${e.resposta ? 'badge-ok' : 'badge-pend'}">${e.resposta ? 'respondida' : 'sem resposta'}</span>
         <span>${new Date(e.updated || e.created).toLocaleDateString('pt-BR')}</span>
       </div>
@@ -475,7 +481,7 @@ function openEntry(id) {
   currentId = id;
   document.getElementById('vTitle').textContent = e.title || '(sem título)';
   document.getElementById('vTag').innerHTML =
-    (e.tag ? `<span class="badge badge-tag">${esc(e.tag)}</span>` : '') +
+    renderTags(e.tag) +
     (e.resposta ? `<span class="badge badge-ok">respondida</span>` : `<span class="badge badge-pend">sem resposta</span>`);
   document.getElementById('vEnunciado').innerHTML = esc(e.enunciado).replace(/\n/g, '<br>');
   document.getElementById('vResposta').innerHTML = e.resposta

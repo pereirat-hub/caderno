@@ -293,7 +293,7 @@ function ensureToken(state) {
 }
 
 function redirectToGoogle(state) {
-  const redirectUri = location.origin + location.pathname;
+  const redirectUri = 'https://pereirat-hub.github.io/caderno/';
   const params = new URLSearchParams({
     client_id: CLIENT_ID,
     redirect_uri: redirectUri,

@@ -234,75 +234,55 @@ textarea::placeholder{color:var(--text-faint)}
   </div>
 </div>
 
+<script src="https://accounts.google.com/gsi/client" async></script>
+<script src="https://apis.google.com/js/api.js" async></script>
 <script>
 const CLIENT_ID = '178420623621-k8j1oq63advvpq3qjko5ru95574ju9nu.apps.googleusercontent.com';
-const SCOPES = 'https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/userinfo.email';
+const SCOPES = 'https://www.googleapis.com/auth/drive.file';
 const FILE_NAME = 'caderno_respostas.json';
 
 let entries = JSON.parse(localStorage.getItem('qr_entries') || '[]');
 let currentId = null;
 let accessToken = null;
-let tokenExpiry = 0;
+let driveReady = false;
+let driveFileId = null;
+let tokenClient = null;
 let userEmail = localStorage.getItem('qr_user_email') || null;
 
-window.onload = async function() {
-  await handleOAuthCallback();
-  if (userEmail) updateDriveUI('connected');
+window.onload = function() {
+  if (userEmail) updateDriveUI('waiting');
   renderList();
+  initGIS();
 };
 
-async function handleOAuthCallback() {
-  const hash = window.location.hash;
-  if (!hash || !hash.includes('access_token')) return;
-  const params = new URLSearchParams(hash.replace(/^#/, ''));
-  const token = params.get('access_token');
-  const expiresIn = params.get('expires_in');
-  const state = params.get('state') || 'sync';
-  if (!token) return;
-  accessToken = token;
-  tokenExpiry = Date.now() + (parseInt(expiresIn) || 3600) * 1000;
-  localStorage.setItem('qr_token', token);
-  localStorage.setItem('qr_token_expiry', String(tokenExpiry));
-  history.replaceState(null, '', location.pathname);
-  await fetchUserInfo();
-  updateDriveUI('connected');
-  toast('Drive conectado! Sincronizando...');
-  if (state === 'load') {
-    await loadFromDrive();
-  } else {
-    await syncToDrive();
+function initGIS() {
+  const tryInit = () => {
+    if (typeof google === 'undefined' || !google.accounts) { setTimeout(tryInit, 300); return; }
+    tokenClient = google.accounts.oauth2.initTokenClient({
+      client_id: CLIENT_ID,
+      scope: SCOPES,
+      callback: onTokenReceived,
+    });
+    tokenClient.requestAccessToken({ prompt: '' });
+  };
+  tryInit();
+}
+
+function onTokenReceived(resp) {
+  if (resp.error) {
+    if (resp.error === 'interaction_required' || resp.error === 'access_denied') {
+      updateDriveUI('needs_login');
+    } else {
+      updateDriveUI('error');
+    }
+    return;
   }
-}
-
-function getStoredToken() {
-  const t = localStorage.getItem('qr_token');
-  const exp = parseInt(localStorage.getItem('qr_token_expiry') || '0');
-  if (t && Date.now() < exp - 60000) return { token: t, expiry: exp };
-  return null;
-}
-
-function ensureToken(state) {
-  const stored = getStoredToken();
-  if (stored) {
-    accessToken = stored.token;
-    tokenExpiry = stored.expiry;
-    return true;
-  }
-  localStorage.setItem('qr_pending_state', state || 'sync');
-  redirectToGoogle(state || 'sync');
-  return false;
-}
-
-function redirectToGoogle(state) {
-  const redirectUri = 'https://pereirat-hub.github.io/caderno/';
-  const params = new URLSearchParams({
-    client_id: CLIENT_ID,
-    redirect_uri: redirectUri,
-    response_type: 'token',
-    scope: SCOPES,
-    state: state || 'sync'
+  accessToken = resp.access_token;
+  driveReady = true;
+  fetchUserInfo().then(() => {
+    updateDriveUI('connected');
+    carregarDoDrive();
   });
-  window.location.href = 'https://accounts.google.com/o/oauth2/v2/auth?' + params.toString();
 }
 
 async function fetchUserInfo() {
@@ -316,24 +296,30 @@ async function fetchUserInfo() {
   } catch(e) { userEmail = 'Conta Google'; }
 }
 
-function signInWithGoogle() { redirectToGoogle('sync'); }
-
 function handleDriveClick() {
-  if (userEmail) {
-    document.getElementById('connectedUser').textContent = 'Conectado como: ' + userEmail;
+  if (driveReady) {
+    document.getElementById('connectedUser').textContent = 'Conectado como: ' + (userEmail || 'Conta Google');
     document.getElementById('disconnectOverlay').style.display = 'flex';
   } else {
-    document.getElementById('driveOverlay').style.display = 'flex';
+    if (tokenClient) {
+      tokenClient.requestAccessToken({ prompt: 'consent' });
+    } else {
+      document.getElementById('driveOverlay').style.display = 'flex';
+    }
   }
+}
+
+function signInWithGoogle() {
+  closeDriveModal();
+  if (tokenClient) tokenClient.requestAccessToken({ prompt: 'consent' });
 }
 
 function closeDriveModal() { document.getElementById('driveOverlay').style.display = 'none'; }
 function closeDisconnectModal() { document.getElementById('disconnectOverlay').style.display = 'none'; }
 
 function disconnectDrive() {
-  accessToken = null; tokenExpiry = 0; userEmail = null;
-  localStorage.removeItem('qr_token');
-  localStorage.removeItem('qr_token_expiry');
+  if (window.google && accessToken) google.accounts.oauth2.revoke(accessToken);
+  accessToken = null; driveReady = false; driveFileId = null; userEmail = null;
   localStorage.removeItem('qr_user_email');
   updateDriveUI('disconnected');
   closeDisconnectModal();
@@ -353,9 +339,17 @@ function updateDriveUI(state) {
     dot.classList.add('syncing');
     label.textContent = 'Sincronizando...';
     chip.className = 'drive-chip connected';
+  } else if (state === 'needs_login') {
+    dot.className = 'dot';
+    label.textContent = userEmail ? 'Reconectar Drive' : 'Conectar Drive';
+    chip.className = 'drive-chip';
+  } else if (state === 'waiting') {
+    dot.classList.add('syncing');
+    label.textContent = 'Conectando...';
+    chip.className = 'drive-chip connected';
   } else if (state === 'error') {
     dot.classList.add('error');
-    label.textContent = 'Erro — reconectar';
+    label.textContent = 'Erro no Drive';
     chip.className = 'drive-chip';
   } else {
     label.textContent = 'Conectar Drive';
@@ -364,18 +358,19 @@ function updateDriveUI(state) {
 }
 
 async function getFileId() {
+  if (driveFileId) return driveFileId;
   const r = await fetch(
     `https://www.googleapis.com/drive/v3/files?q=name%3D'${FILE_NAME}'+and+trashed%3Dfalse&fields=files(id)`,
     { headers: { Authorization: 'Bearer ' + accessToken } }
   );
   const d = await r.json();
-  return d.files && d.files[0] ? d.files[0].id : null;
+  driveFileId = d.files && d.files[0] ? d.files[0].id : null;
+  return driveFileId;
 }
 
 async function syncToDrive() {
-  if (!userEmail) return;
+  if (!driveReady) return;
   closeDisconnectModal();
-  if (!ensureToken('sync')) return;
   updateDriveUI('syncing');
   try {
     const content = JSON.stringify(entries, null, 2);
@@ -390,13 +385,9 @@ async function syncToDrive() {
       ? `https://www.googleapis.com/upload/drive/v3/files/${existingId}?uploadType=multipart`
       : `https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart`;
     const r = await fetch(url, { method, headers: { Authorization: 'Bearer ' + accessToken }, body: form });
-    if (r.status === 401) {
-      localStorage.removeItem('qr_token');
-      localStorage.removeItem('qr_token_expiry');
-      redirectToGoogle('sync');
-      return;
-    }
+    if (r.status === 401) { driveReady = false; updateDriveUI('needs_login'); toast('Sessão expirada. Clique em "Reconectar Drive".'); return; }
     if (!r.ok) throw new Error('status ' + r.status);
+    if (!existingId) driveFileId = (await r.json()).id;
     updateDriveUI('connected');
     toast('Salvo no Drive ✓');
   } catch(e) {
@@ -405,24 +396,18 @@ async function syncToDrive() {
   }
 }
 
-async function loadFromDrive() {
-  if (!userEmail) return;
+async function carregarDoDrive() {
+  if (!driveReady) return;
   closeDisconnectModal();
-  if (!ensureToken('load')) return;
   updateDriveUI('syncing');
   try {
     const fileId = await getFileId();
-    if (!fileId) { updateDriveUI('connected'); toast('Nenhum arquivo encontrado no Drive.'); return; }
+    if (!fileId) { updateDriveUI('connected'); toast('Nenhum arquivo no Drive ainda.'); return; }
     const r = await fetch(
       `https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`,
       { headers: { Authorization: 'Bearer ' + accessToken } }
     );
-    if (r.status === 401) {
-      localStorage.removeItem('qr_token');
-      localStorage.removeItem('qr_token_expiry');
-      redirectToGoogle('load');
-      return;
-    }
+    if (r.status === 401) { driveReady = false; updateDriveUI('needs_login'); return; }
     if (!r.ok) throw new Error();
     entries = await r.json();
     localStorage.setItem('qr_entries', JSON.stringify(entries));
@@ -483,9 +468,11 @@ function openEntry(id) {
   document.getElementById('vTag').innerHTML =
     renderTags(e.tag) +
     (e.resposta ? `<span class="badge badge-ok">respondida</span>` : `<span class="badge badge-pend">sem resposta</span>`);
-  document.getElementById('vEnunciado').innerHTML = esc(e.enunciado).replace(/\n/g, '<br>');
+  document.getElementById('vEnunciado').innerHTML = esc(e.enunciado).replace(/
+/g, '<br>');
   document.getElementById('vResposta').innerHTML = e.resposta
-    ? esc(e.resposta).replace(/\n/g, '<br>')
+    ? esc(e.resposta).replace(/
+/g, '<br>')
     : '<span style="color:var(--text-faint)">Sem resposta cadastrada.</span>';
   document.getElementById('viewEmpty').style.display = 'none';
   document.getElementById('viewWrap').style.display = 'flex';
@@ -547,7 +534,7 @@ function deleteEntry() {
 
 function persist() {
   localStorage.setItem('qr_entries', JSON.stringify(entries));
-  if (userEmail) syncToDrive();
+  if (driveReady) syncToDrive();
 }
 
 function printCurrent() { window.print(); }

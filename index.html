@@ -16,46 +16,56 @@
   --green:#1A5C3A;--green-light:#EBF5EF;
   --radius:10px;--radius-sm:6px;
 }
-body{font-family:'DM Sans',sans-serif;color:var(--text);background:var(--bg);height:100vh;display:flex;flex-direction:column}
-.app{display:flex;flex-direction:column;height:100vh;position:relative}
-.topbar{display:flex;align-items:center;justify-content:space-between;padding:11px 18px;background:var(--accent);gap:8px;flex-wrap:wrap}
+html,body{height:100%;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;color:var(--text);background:var(--bg);display:flex;flex-direction:column}
+
+/* DRIVE BAR */
+#drive-bar{display:flex;align-items:center;justify-content:space-between;padding:8px 18px;background:#1e3a52;gap:8px;flex-wrap:wrap;flex-shrink:0}
+.drive-info{display:flex;align-items:center;gap:8px}
+#drive-status-dot{width:8px;height:8px;border-radius:50%;background:#aaa;flex-shrink:0;transition:background .3s}
+#drive-status-dot.connected{background:#4ade80}
+#drive-status-dot.syncing{background:#facc15;animation:pulse 1s infinite}
+#drive-status-dot.error{background:#f87171}
+#drive-status-text{color:rgba(255,255,255,0.75);font-size:12px;font-family:'DM Sans',sans-serif}
+.drive-btn{font-size:12px;padding:5px 12px;border-radius:var(--radius-sm);background:rgba(255,255,255,0.15);color:#fff;border:1px solid rgba(255,255,255,0.25);cursor:pointer;font-family:'DM Sans',sans-serif}
+.drive-btn:hover{background:rgba(255,255,255,0.22)}
+
+/* TOPBAR */
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:11px 18px;background:var(--accent);gap:8px;flex-wrap:wrap;flex-shrink:0}
 .topbar-title{font-family:'Lora',serif;font-size:16px;font-weight:600;color:#fff}
 .btn-top{font-size:13px;padding:6px 14px;border-radius:var(--radius-sm);background:rgba(255,255,255,0.15);color:#fff;border:1px solid rgba(255,255,255,0.25);cursor:pointer;font-family:'DM Sans',sans-serif}
 .btn-top:hover{background:rgba(255,255,255,0.22)}
 .btn-top.solid{background:#fff;color:var(--accent);border-color:#fff}
-.drive-chip{font-size:12px;padding:5px 11px;border-radius:var(--radius-sm);background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.75);border:none;cursor:pointer;display:flex;align-items:center;gap:7px;font-family:'DM Sans',sans-serif}
-.drive-chip:hover{background:rgba(255,255,255,0.18)}
-.drive-chip.connected{color:#fff}
-.dot{width:7px;height:7px;border-radius:50%;background:#aaa;flex-shrink:0;transition:background .3s}
-.dot.connected{background:#4ade80}
-.dot.syncing{background:#facc15;animation:pulse 1s infinite}
-.dot.error{background:#f87171}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
-.tabs{display:flex;border-bottom:1px solid var(--border);padding:0 18px;background:var(--surface)}
+
+.tabs{display:flex;border-bottom:1px solid var(--border);padding:0 18px;background:var(--surface);flex-shrink:0}
 .tab{font-size:13px;font-family:'DM Sans',sans-serif;padding:9px 16px;cursor:pointer;border:none;border-bottom:2px solid transparent;color:var(--text-muted);background:transparent}
 .tab.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:500}
 .tab:hover:not(.active){color:var(--text)}
-.content{flex:1;overflow:hidden;display:flex;flex-direction:column}
-.panel{display:none;flex:1;overflow:hidden;flex-direction:column}
+
+.content{flex:1;overflow:hidden;display:flex;flex-direction:column;min-height:0}
+.panel{display:none;flex:1;overflow:hidden;flex-direction:column;min-height:0}
 .panel.active{display:flex}
-.list-header{padding:12px 18px;border-bottom:1px solid var(--border);display:flex;gap:8px;align-items:center;background:var(--surface)}
+
+.list-header{padding:12px 18px;border-bottom:1px solid var(--border);display:flex;gap:8px;align-items:center;background:var(--surface);flex-shrink:0}
 .list-header input{flex:1;font-size:13px;padding:7px 10px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface);color:var(--text);font-family:'DM Sans',sans-serif}
 .list-header input:focus{outline:none;border-color:var(--accent)}
 .list-header input::placeholder{color:var(--text-faint)}
 .btn-new{font-size:13px;padding:6px 14px;border-radius:var(--radius-sm);background:var(--accent);color:#fff;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap}
 .btn-new:hover{background:#1e3a52}
+
 .list-body{flex:1;overflow-y:auto;padding:12px 18px;display:flex;flex-direction:column;gap:8px;background:var(--bg)}
 .card{border:1px solid var(--border);border-radius:var(--radius);padding:13px 15px;cursor:pointer;background:var(--surface)}
 .card:hover{border-color:var(--border-strong)}
 .card-title{font-family:'Lora',serif;font-size:14px;font-weight:500;margin-bottom:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--text)}
 .card-preview{font-size:12px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.card-meta{font-size:11px;color:var(--text-faint);margin-top:7px;display:flex;gap:10px;align-items:center}
+.card-meta{font-size:11px;color:var(--text-faint);margin-top:7px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .badge{font-size:11px;padding:2px 8px;border-radius:var(--radius-sm);display:inline-block}
 .badge-tag{background:var(--accent-light);color:var(--accent)}
 .badge-ok{background:var(--green-light);color:var(--green)}
 .badge-pend{background:var(--amber-light);color:var(--amber)}
 .empty{text-align:center;padding:48px 20px;color:var(--text-faint);font-size:13px;line-height:1.9}
-.editor-wrap{display:flex;flex:1;overflow:hidden}
+
+.editor-wrap{display:flex;flex:1;overflow:hidden;min-height:0}
 .editor-left,.editor-right{flex:1;display:flex;flex-direction:column;padding:16px 18px;overflow-y:auto}
 .editor-left{border-right:1px solid var(--border);background:var(--bg)}
 .editor-right{background:var(--surface)}
@@ -64,11 +74,11 @@ body{font-family:'DM Sans',sans-serif;color:var(--text);background:var(--bg);hei
 .editor-meta input{width:100%;font-size:13px;padding:8px 10px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface);color:var(--text);font-family:'DM Sans',sans-serif}
 .editor-meta input:focus{outline:none;border-color:var(--accent)}
 .editor-meta input::placeholder{color:var(--text-faint)}
-textarea{width:100%;flex:1;min-height:210px;resize:none;font-size:14px;line-height:1.75;border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px;background:var(--surface);color:var(--text);font-family:'DM Sans',sans-serif}
+textarea{width:100%;flex:1;min-height:180px;resize:none;font-size:14px;line-height:1.75;border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px;background:var(--surface);color:var(--text);font-family:'DM Sans',sans-serif}
 #editResposta{text-align:justify}
 textarea:focus{outline:none;border-color:var(--accent)}
 textarea::placeholder{color:var(--text-faint)}
-.editor-actions{padding:12px 18px;border-top:1px solid var(--border);display:flex;gap:8px;align-items:center;justify-content:space-between;flex-wrap:wrap;background:var(--surface)}
+.editor-actions{padding:12px 18px;border-top:1px solid var(--border);display:flex;gap:8px;align-items:center;justify-content:space-between;flex-wrap:wrap;background:var(--surface);flex-shrink:0}
 .editor-info{font-size:12px;color:var(--text-faint)}
 .btn{font-size:13px;padding:6px 14px;border-radius:var(--radius-sm);border:1px solid var(--border);background:transparent;color:var(--text-muted);cursor:pointer;font-family:'DM Sans',sans-serif}
 .btn:hover{border-color:var(--border-strong);color:var(--text)}
@@ -76,7 +86,8 @@ textarea::placeholder{color:var(--text-faint)}
 .btn.primary:hover{background:#1e3a52}
 .btn.danger{color:#C0392B;border-color:var(--border)}
 .btn.danger:hover{background:#fff0ee;border-color:#C0392B}
-.view-wrap{display:flex;flex:1;overflow:hidden}
+
+.view-wrap{display:flex;flex:1;overflow:hidden;min-height:0}
 .view-left{flex:1;padding:22px 24px;overflow-y:auto;background:var(--bg);border-right:1px solid var(--border)}
 .view-right{flex:1;padding:22px 24px;overflow-y:auto;background:var(--surface)}
 .view-title{font-family:'Lora',serif;font-size:19px;font-weight:600;margin-bottom:7px;color:var(--text);line-height:1.35}
@@ -85,22 +96,31 @@ textarea::placeholder{color:var(--text-faint)}
 .view-enunciado{font-size:15px;line-height:1.85;color:var(--text)}
 .view-resposta{font-size:14px;line-height:1.85;color:var(--text);text-align:justify}
 .view-empty{display:flex;align-items:center;justify-content:center;flex:1;color:var(--text-faint);font-size:13px;background:var(--bg)}
-.view-actions{padding:12px 18px;border-top:1px solid var(--border);display:flex;gap:8px;background:var(--surface)}
-.overlay{position:fixed;inset:0;background:rgba(0,0,0,.35);display:flex;align-items:center;justify-content:center;z-index:9999}
-.modal{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;max-width:420px;width:90%;border-top:3px solid var(--accent)}
-.modal h2{font-family:'Lora',serif;font-size:17px;font-weight:600;margin-bottom:8px;color:var(--accent)}
-.modal p{font-size:13px;color:var(--text-muted);line-height:1.65;margin-bottom:16px}
-.modal-hint{font-size:12px;background:var(--accent-light);color:var(--accent);padding:10px 12px;border-left:3px solid var(--accent);margin-bottom:16px;line-height:1.65}
-.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:4px}
-.google-btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:10px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface);color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;cursor:pointer;margin-bottom:8px}
+.view-actions{padding:12px 18px;border-top:1px solid var(--border);display:flex;gap:8px;background:var(--surface);flex-shrink:0}
+
+/* CONFIG OVERLAY — igual ao Fichas */
+#config-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:9999;align-items:center;justify-content:center}
+#config-overlay.open{display:flex}
+.config-box{background:var(--surface);border-radius:var(--radius);padding:24px;max-width:420px;width:90%;border-top:3px solid var(--accent)}
+.config-box h2{font-family:'Lora',serif;font-size:17px;font-weight:600;margin-bottom:8px;color:var(--accent)}
+.config-box p{font-size:13px;color:var(--text-muted);line-height:1.65;margin-bottom:14px}
+.config-hint{font-size:12px;background:var(--accent-light);color:var(--accent);padding:10px 12px;border-left:3px solid var(--accent);margin-bottom:14px;line-height:1.65}
+.config-label{font-size:11px;font-weight:500;color:var(--text-faint);text-transform:uppercase;letter-spacing:.06em;margin-bottom:7px}
+.config-box input{width:100%;font-size:13px;padding:8px 10px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;margin-bottom:14px}
+.config-box input:focus{outline:none;border-color:var(--accent)}
+.config-actions{display:flex;gap:8px;justify-content:flex-end}
+.google-btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:10px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface);color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;cursor:pointer;margin-bottom:10px}
 .google-btn:hover{background:var(--bg);border-color:var(--border-strong)}
-.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--accent);color:#fff;border-radius:var(--radius-sm);padding:8px 18px;font-size:13px;z-index:9999;white-space:nowrap;font-family:'DM Sans',sans-serif}
+
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--accent);color:#fff;border-radius:var(--radius-sm);padding:8px 18px;font-size:13px;z-index:99999;white-space:nowrap;font-family:'DM Sans',sans-serif}
+
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
 @media print{
   *{overflow:visible!important;height:auto!important;max-height:none!important}
-  .topbar,.tabs,.editor-actions,.view-actions,.overlay{display:none!important}
+  #drive-bar,.topbar,.tabs,.editor-actions,.view-actions{display:none!important}
   .view-empty{display:none!important}
   body{height:auto;overflow:visible;background:#fff}
-  .app{height:auto;display:block}
   .content{display:block;height:auto}
   .panel{display:none!important}
   #panel-view{display:block!important}
@@ -111,166 +131,168 @@ textarea::placeholder{color:var(--text-faint)}
   .view-label{font-size:9pt;margin-bottom:8pt;padding-bottom:4pt}
   .view-enunciado{font-size:12pt;line-height:1.8}
   .view-resposta{font-size:12pt;line-height:1.8;text-align:justify}
-  .view-tag-row{margin-bottom:12pt}
   .view-left,.view-right{page-break-inside:avoid}
 }
 </style>
-<script src="https://accounts.google.com/gsi/client" async></script>
 </head>
 <body>
-<div class="app">
-  <div class="topbar">
-    <div class="topbar-title">Caderno de Respostas</div>
-    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-      <div class="drive-chip" id="driveBtn" onclick="handleDriveClick()">
-        <span class="dot" id="driveDot"></span>
-        <span id="driveLabel">Conectar Drive</span>
-      </div>
-      <button class="btn-top" onclick="newEntry()">+ Nova pergunta</button>
-      <button class="btn-top solid" onclick="printCurrent()" id="printBtn" style="display:none">Imprimir</button>
-    </div>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="topbar-title">Caderno de Respostas</div>
+  <div style="display:flex;gap:8px;align-items:center">
+    <button class="btn-top" onclick="newEntry()">+ Nova pergunta</button>
+    <button class="btn-top solid" onclick="printCurrent()" id="printBtn" style="display:none">Imprimir</button>
   </div>
-
-  <div class="tabs">
-    <button class="tab active" id="tab-list" onclick="showTab('list')">Perguntas</button>
-    <button class="tab" id="tab-editor" onclick="showTab('editor')">Editar</button>
-    <button class="tab" id="tab-view" onclick="showTab('view')">Visualizar</button>
-  </div>
-
-  <div class="content">
-    <div class="panel active" id="panel-list">
-      <div class="list-header">
-        <input type="text" id="searchInput" placeholder="Buscar por título, tag ou conteúdo..." oninput="renderList()">
-        <button class="btn-new" onclick="newEntry()">+ Nova</button>
-      </div>
-      <div class="list-body" id="listBody"></div>
-    </div>
-
-    <div class="panel" id="panel-editor">
-      <div class="editor-wrap">
-        <div class="editor-left">
-          <div class="editor-meta">
-            <div class="editor-label">Título</div>
-            <input type="text" id="editTitle" placeholder="Ex: Princípio da legalidade...">
-          </div>
-          <div class="editor-meta">
-            <div class="editor-label">Tag / assunto</div>
-            <input type="text" id="editTag" placeholder="Ex: Constitucional; Processo Civil; Administrativo">
-          </div>
-          <div class="editor-label">Enunciado</div>
-          <textarea id="editEnunciado" placeholder="Cole ou escreva a pergunta/enunciado aqui..."></textarea>
-        </div>
-        <div class="editor-right">
-          <div class="editor-label">Sua resposta</div>
-          <textarea id="editResposta" placeholder="Escreva sua resposta dissertativa aqui. O texto ficará justificado na visualização..."></textarea>
-        </div>
-      </div>
-      <div class="editor-actions">
-        <span class="editor-info" id="editInfo">Nova pergunta</span>
-        <div style="display:flex;gap:8px">
-          <button class="btn danger" id="btnDelete" onclick="deleteEntry()" style="display:none">Excluir</button>
-          <button class="btn" onclick="showTab('list')">Cancelar</button>
-          <button class="btn primary" onclick="saveEntry()">Salvar</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="panel" id="panel-view">
-      <div class="view-empty" id="viewEmpty">Selecione uma pergunta na lista para visualizar.</div>
-      <div class="view-wrap" id="viewWrap" style="display:none">
-        <div class="view-left">
-          <div class="view-title" id="vTitle"></div>
-          <div class="view-tag-row" id="vTag"></div>
-          <div class="view-label">Enunciado</div>
-          <div class="view-enunciado" id="vEnunciado"></div>
-        </div>
-        <div class="view-right">
-          <div class="view-label">Resposta</div>
-          <div class="view-resposta" id="vResposta"></div>
-        </div>
-      </div>
-      <div class="view-actions" id="viewActions" style="display:none">
-        <button class="btn" onclick="editCurrent()">Editar</button>
-        <button class="btn" onclick="printCurrent()">Imprimir / PDF</button>
-        <button class="btn" onclick="showTab('list')">← Voltar</button>
-      </div>
-    </div>
 </div>
 
-<!-- Modal: conectar -->
-<div class="overlay" id="driveOverlay" style="display:none">
-    <div class="modal">
-      <h2>Conectar ao Google Drive</h2>
-      <p>Você será redirecionado para o login do Google. Funciona em qualquer navegador.</p>
-      <div class="modal-hint">Seus dados ficam salvos em <strong>caderno_respostas.json</strong> no seu Drive, visível só para você.</div>
-      <button class="google-btn" onclick="signInWithGoogle()">
-        <svg width="18" height="18" viewBox="0 0 24 24">
-          <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-          <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-          <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/>
-          <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-        </svg>
-        Entrar com Google
-      </button>
-      <div class="modal-actions">
-        <button class="btn" onclick="closeDriveModal()">Cancelar</button>
+<!-- DRIVE BAR -->
+<div id="drive-bar">
+  <div class="drive-info">
+    <div id="drive-status-dot"></div>
+    <span id="drive-status-text">Google Drive não configurado</span>
+  </div>
+  <div style="display:flex;gap:6px">
+    <button class="drive-btn" onclick="sincronizarDrive()" id="btn-sync" style="display:none">↻ Sincronizar</button>
+    <button class="drive-btn" onclick="abrirConfig()">⚙ Configurar Drive</button>
+  </div>
+</div>
+
+<div class="tabs">
+  <button class="tab active" id="tab-list" onclick="showTab('list')">Perguntas</button>
+  <button class="tab" id="tab-editor" onclick="showTab('editor')">Editar</button>
+  <button class="tab" id="tab-view" onclick="showTab('view')">Visualizar</button>
+</div>
+
+<div class="content">
+  <!-- LIST -->
+  <div class="panel active" id="panel-list">
+    <div class="list-header">
+      <input type="text" id="searchInput" placeholder="Buscar por título, tag ou conteúdo..." oninput="renderList()">
+      <button class="btn-new" onclick="newEntry()">+ Nova</button>
+    </div>
+    <div class="list-body" id="listBody"></div>
+  </div>
+
+  <!-- EDITOR -->
+  <div class="panel" id="panel-editor">
+    <div class="editor-wrap">
+      <div class="editor-left">
+        <div class="editor-meta">
+          <div class="editor-label">Título</div>
+          <input type="text" id="editTitle" placeholder="Ex: Princípio da legalidade...">
+        </div>
+        <div class="editor-meta">
+          <div class="editor-label">Tags (separe por ;)</div>
+          <input type="text" id="editTag" placeholder="Ex: Constitucional; Processo Civil">
+        </div>
+        <div class="editor-label">Enunciado</div>
+        <textarea id="editEnunciado" placeholder="Cole ou escreva a pergunta/enunciado aqui..."></textarea>
+      </div>
+      <div class="editor-right">
+        <div class="editor-label">Sua resposta</div>
+        <textarea id="editResposta" placeholder="Escreva sua resposta dissertativa aqui..."></textarea>
+      </div>
+    </div>
+    <div class="editor-actions">
+      <span class="editor-info" id="editInfo">Nova pergunta</span>
+      <div style="display:flex;gap:8px">
+        <button class="btn danger" id="btnDelete" onclick="deleteEntry()" style="display:none">Excluir</button>
+        <button class="btn" onclick="showTab('list')">Cancelar</button>
+        <button class="btn primary" onclick="saveEntry()">Salvar</button>
       </div>
     </div>
   </div>
 
-<!-- Modal: gerenciar -->
-<div class="overlay" id="disconnectOverlay" style="display:none">
-    <div class="modal">
-      <h2>Google Drive conectado</h2>
-      <p id="connectedUser" style="margin-bottom:14px;font-size:13px;color:var(--text-muted)"></p>
-      <div style="display:flex;gap:8px;margin-bottom:12px">
-        <button class="btn" onclick="loadFromDrive()" style="flex:1">↓ Carregar do Drive</button>
-        <button class="btn primary" onclick="syncToDrive()" style="flex:1">↑ Salvar no Drive</button>
+  <!-- VIEW -->
+  <div class="panel" id="panel-view">
+    <div class="view-empty" id="viewEmpty">Selecione uma pergunta na lista para visualizar.</div>
+    <div class="view-wrap" id="viewWrap" style="display:none">
+      <div class="view-left">
+        <div class="view-title" id="vTitle"></div>
+        <div class="view-tag-row" id="vTag"></div>
+        <div class="view-label">Enunciado</div>
+        <div class="view-enunciado" id="vEnunciado"></div>
       </div>
-      <div style="padding-top:12px;border-top:1px solid var(--border);display:flex;justify-content:space-between">
-        <button class="btn danger" onclick="disconnectDrive()">Desconectar</button>
-        <button class="btn" onclick="closeDisconnectModal()">Fechar</button>
+      <div class="view-right">
+        <div class="view-label">Resposta</div>
+        <div class="view-resposta" id="vResposta"></div>
       </div>
+    </div>
+    <div class="view-actions" id="viewActions" style="display:none">
+      <button class="btn" onclick="editCurrent()">Editar</button>
+      <button class="btn" onclick="printCurrent()">Imprimir / PDF</button>
+      <button class="btn" onclick="showTab('list')">← Voltar</button>
     </div>
   </div>
 </div>
 
+<!-- CONFIG OVERLAY — igual ao Fichas -->
+<div id="config-overlay" onclick="fecharConfigSeOverlay(event)">
+  <div class="config-box">
+    <h2>Configurar Google Drive</h2>
+    <p>Conecte sua conta Google para sincronizar automaticamente em qualquer dispositivo.</p>
+    <div class="config-hint">Seus dados ficam salvos em <strong>caderno_respostas.json</strong> no seu Drive, visível só para você.</div>
+    <button class="google-btn" id="btn-google-login" onclick="conectarDrive()">
+      <svg width="18" height="18" viewBox="0 0 24 24">
+        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/>
+        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+      </svg>
+      Entrar com Google
+    </button>
+    <button class="btn danger" id="btn-desconectar" onclick="desconectarDrive()" style="display:none;width:100%;margin-bottom:10px">Desconectar conta</button>
+    <div class="config-actions">
+      <button class="btn" onclick="fecharConfig()">Fechar</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://apis.google.com/js/api.js"></script>
+<script src="https://accounts.google.com/gsi/client" async></script>
 <script>
-const CLIENT_ID = '178420623621-k8j1oq63advvpq3qjko5ru95574ju9nu.apps.googleusercontent.com';
-const SCOPES = 'https://www.googleapis.com/auth/drive.file';
-const FILE_NAME = 'caderno_respostas.json';
+const STORAGE_KEY = 'caderno_respostas_v1';
+const CLIENT_ID   = '178420623621-k8j1oq63advvpq3qjko5ru95574ju9nu.apps.googleusercontent.com';
+const SCOPES      = 'https://www.googleapis.com/auth/drive.file';
+const FILE_NAME   = 'caderno_respostas.json';
 
-let entries = JSON.parse(localStorage.getItem('qr_entries') || '[]');
-let currentId = null;
-let accessToken = null;
-let driveReady = false;
+let entries     = [];
+let currentId   = null;
+let driveReady  = false;
 let driveFileId = null;
 let tokenClient = null;
-let userEmail = localStorage.getItem('qr_user_email') || null;
+let accessToken = null;
 
-window.onload = function() {
-  if (userEmail) updateDriveUI('waiting');
+// ── localStorage ──
+function carregarLocal() {
+  try { entries = JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
+  catch { entries = []; }
+}
+function salvarLocal() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
+}
+
+// ── Init ──
+window.addEventListener('load', () => {
+  carregarLocal();
   renderList();
+  setStatus('syncing', 'Conectando ao Drive...');
   initGIS();
-};
+});
 
+// ── Google Identity Services — IGUAL AO FICHAS ──
 function initGIS() {
   const tryInit = () => {
-    if (typeof google === 'undefined' || !google.accounts || !google.accounts.oauth2) {
-      setTimeout(tryInit, 300);
-      return;
+    if (typeof google === 'undefined' || !google.accounts) {
+      setTimeout(tryInit, 300); return;
     }
     tokenClient = google.accounts.oauth2.initTokenClient({
       client_id: CLIENT_ID,
       scope: SCOPES,
       callback: onTokenReceived,
     });
-    // Tenta silencioso só se já autorizou antes
-    if (userEmail) {
-      tokenClient.requestAccessToken({ prompt: '' });
-    } else {
-      updateDriveUI('disconnected');
-    }
+    tokenClient.requestAccessToken({ prompt: '' });
   };
   tryInit();
 }
@@ -278,100 +300,76 @@ function initGIS() {
 function onTokenReceived(resp) {
   if (resp.error) {
     if (resp.error === 'interaction_required' || resp.error === 'access_denied') {
-      updateDriveUI('needs_login');
+      setStatus('off', 'Clique em "Configurar Drive" para fazer login');
+      document.getElementById('btn-sync').style.display = 'none';
     } else {
-      updateDriveUI('error');
+      setStatus('error', 'Erro ao autenticar: ' + resp.error);
     }
     return;
   }
   accessToken = resp.access_token;
-  driveReady = true;
-  fetchUserInfo().then(() => {
-    updateDriveUI('connected');
-    carregarDoDrive();
+  gapi.load('client', async () => {
+    await gapi.client.init({});
+    gapi.client.setToken({ access_token: accessToken });
+    driveReady = true;
+    document.getElementById('btn-sync').style.display = '';
+    document.getElementById('btn-sync').textContent = '↻ Sincronizar';
+    document.getElementById('btn-sync').onclick = sincronizarDrive;
+    document.getElementById('btn-google-login').style.display = 'none';
+    document.getElementById('btn-desconectar').style.display = '';
+    setStatus('syncing', 'Carregando dados do Drive...');
+    await carregarDoDrive();
   });
 }
 
-async function fetchUserInfo() {
-  try {
-    const r = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
-      headers: { Authorization: 'Bearer ' + accessToken }
-    });
-    const d = await r.json();
-    userEmail = d.email || 'Conta Google';
-    localStorage.setItem('qr_user_email', userEmail);
-  } catch(e) { userEmail = 'Conta Google'; }
-}
-
-function handleDriveClick() {
-  if (driveReady) {
-    document.getElementById('connectedUser').textContent = 'Conectado como: ' + (userEmail || 'Conta Google');
-    document.getElementById('disconnectOverlay').style.display = 'flex';
-  } else {
-    document.getElementById('driveOverlay').style.display = 'flex';
+function conectarDrive() {
+  if (!tokenClient) {
+    setStatus('error', 'Lib do Google ainda carregando...');
+    setTimeout(conectarDrive, 500);
+    return;
   }
+  tokenClient.requestAccessToken({ prompt: 'consent' });
+  fecharConfig();
 }
 
-function signInWithGoogle() {
-  closeDriveModal();
-  if (tokenClient) {
-    tokenClient.requestAccessToken({ prompt: 'consent' });
-  } else {
-    // lib ainda carregando, tenta em 500ms
-    setTimeout(() => {
-      if (tokenClient) tokenClient.requestAccessToken({ prompt: 'consent' });
-      else toast('Erro ao carregar lib do Google. Recarregue a página.');
-    }, 500);
-  }
-}
-
-function closeDriveModal() { document.getElementById('driveOverlay').style.display = 'none'; }
-function closeDisconnectModal() { document.getElementById('disconnectOverlay').style.display = 'none'; }
-
-function disconnectDrive() {
-  if (window.google && accessToken) google.accounts.oauth2.revoke(accessToken);
-  accessToken = null; driveReady = false; driveFileId = null; userEmail = null;
-  localStorage.removeItem('qr_user_email');
-  updateDriveUI('disconnected');
-  closeDisconnectModal();
+function desconectarDrive() {
+  if (accessToken) google.accounts.oauth2.revoke(accessToken, () => {});
+  accessToken = null; driveReady = false; driveFileId = null;
+  document.getElementById('btn-sync').style.display = 'none';
+  document.getElementById('btn-google-login').style.display = '';
+  document.getElementById('btn-desconectar').style.display = 'none';
+  setStatus('off', 'Drive desconectado');
+  fecharConfig();
   toast('Drive desconectado.');
 }
 
-function updateDriveUI(state) {
-  const dot = document.getElementById('driveDot');
-  const label = document.getElementById('driveLabel');
-  const chip = document.getElementById('driveBtn');
-  dot.className = 'dot';
-  if (state === 'connected') {
-    dot.classList.add('connected');
-    label.textContent = userEmail ? userEmail.split('@')[0] : 'Drive conectado';
-    chip.className = 'drive-chip connected';
-  } else if (state === 'syncing') {
-    dot.classList.add('syncing');
-    label.textContent = 'Sincronizando...';
-    chip.className = 'drive-chip connected';
-  } else if (state === 'needs_login') {
-    dot.className = 'dot';
-    label.textContent = userEmail ? 'Reconectar Drive' : 'Conectar Drive';
-    chip.className = 'drive-chip';
-  } else if (state === 'waiting') {
-    dot.classList.add('syncing');
-    label.textContent = 'Conectando...';
-    chip.className = 'drive-chip connected';
-  } else if (state === 'error') {
-    dot.classList.add('error');
-    label.textContent = 'Erro no Drive';
-    chip.className = 'drive-chip';
-  } else {
-    label.textContent = 'Conectar Drive';
-    chip.className = 'drive-chip';
-  }
+// ── Config modal ──
+function abrirConfig() {
+  document.getElementById('config-overlay').classList.add('open');
+}
+function fecharConfig() {
+  document.getElementById('config-overlay').classList.remove('open');
+}
+function fecharConfigSeOverlay(e) {
+  if (e.target === document.getElementById('config-overlay')) fecharConfig();
 }
 
-async function getFileId() {
+// ── Status bar ──
+function setStatus(tipo, msg) {
+  const dot  = document.getElementById('drive-status-dot');
+  const text = document.getElementById('drive-status-text');
+  dot.className = '';
+  if (tipo === 'connected') dot.classList.add('connected');
+  else if (tipo === 'syncing') dot.classList.add('syncing');
+  else if (tipo === 'error')  dot.classList.add('error');
+  text.textContent = msg;
+}
+
+// ── Drive API ──
+async function buscarArquivo() {
   if (driveFileId) return driveFileId;
   const r = await fetch(
-    `https://www.googleapis.com/drive/v3/files?q=name%3D'${FILE_NAME}'+and+trashed%3Dfalse&fields=files(id)`,
+    `https://www.googleapis.com/drive/v3/files?q=name='${FILE_NAME}' and trashed=false&fields=files(id)`,
     { headers: { Authorization: 'Bearer ' + accessToken } }
   );
   const d = await r.json();
@@ -379,58 +377,71 @@ async function getFileId() {
   return driveFileId;
 }
 
-async function syncToDrive() {
-  if (!driveReady) return;
-  closeDisconnectModal();
-  updateDriveUI('syncing');
-  try {
-    const content = JSON.stringify(entries, null, 2);
-    const blob = new Blob([content], { type: 'application/json' });
-    const existingId = await getFileId();
-    const meta = { name: FILE_NAME, mimeType: 'application/json' };
-    const form = new FormData();
-    form.append('metadata', new Blob([JSON.stringify(meta)], { type: 'application/json' }));
-    form.append('file', blob);
-    const method = existingId ? 'PATCH' : 'POST';
-    const url = existingId
-      ? `https://www.googleapis.com/upload/drive/v3/files/${existingId}?uploadType=multipart`
-      : `https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart`;
-    const r = await fetch(url, { method, headers: { Authorization: 'Bearer ' + accessToken }, body: form });
-    if (r.status === 401) { driveReady = false; updateDriveUI('needs_login'); toast('Sessão expirada. Clique em "Reconectar Drive".'); return; }
-    if (!r.ok) throw new Error('status ' + r.status);
-    if (!existingId) driveFileId = (await r.json()).id;
-    updateDriveUI('connected');
-    toast('Salvo no Drive ✓');
-  } catch(e) {
-    updateDriveUI('error');
-    toast('Erro ao salvar no Drive.');
-  }
-}
-
 async function carregarDoDrive() {
   if (!driveReady) return;
-  closeDisconnectModal();
-  updateDriveUI('syncing');
+  fecharConfig();
   try {
-    const fileId = await getFileId();
-    if (!fileId) { updateDriveUI('connected'); toast('Nenhum arquivo no Drive ainda.'); return; }
+    const fid = await buscarArquivo();
+    if (!fid) {
+      setStatus('connected', 'Drive conectado · Nenhum arquivo ainda');
+      return;
+    }
     const r = await fetch(
-      `https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`,
+      `https://www.googleapis.com/drive/v3/files/${fid}?alt=media`,
       { headers: { Authorization: 'Bearer ' + accessToken } }
     );
-    if (r.status === 401) { driveReady = false; updateDriveUI('needs_login'); return; }
-    if (!r.ok) throw new Error();
-    entries = await r.json();
-    localStorage.setItem('qr_entries', JSON.stringify(entries));
-    renderList();
-    updateDriveUI('connected');
+    const dados = await r.json();
+    if (Array.isArray(dados) && dados.length > 0) {
+      const idsRemoto = new Set(dados.map(x => x.id));
+      const soLocal = entries.filter(x => !idsRemoto.has(x.id));
+      entries = [...dados, ...soLocal];
+      salvarLocal();
+      renderList();
+    }
+    setStatus('connected', 'Drive conectado · ' + FILE_NAME);
     toast('Dados carregados do Drive ✓');
   } catch(e) {
-    updateDriveUI('error');
-    toast('Erro ao carregar do Drive.');
+    setStatus('error', 'Erro ao carregar do Drive');
   }
 }
 
+async function salvarNoDrive() {
+  if (!driveReady || !accessToken) return;
+  setStatus('syncing', 'Salvando no Drive...');
+  try {
+    const conteudo = JSON.stringify(entries, null, 2);
+    const blob = new Blob([conteudo], { type: 'application/json' });
+    if (!driveFileId) {
+      const meta = JSON.stringify({ name: FILE_NAME, mimeType: 'application/json' });
+      const form = new FormData();
+      form.append('metadata', new Blob([meta], { type: 'application/json' }));
+      form.append('file', blob);
+      const r = await fetch(
+        'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id',
+        { method: 'POST', headers: { Authorization: 'Bearer ' + accessToken }, body: form }
+      );
+      const d = await r.json();
+      driveFileId = d.id;
+    } else {
+      await fetch(
+        `https://www.googleapis.com/upload/drive/v3/files/${driveFileId}?uploadType=media`,
+        { method: 'PATCH', headers: { Authorization: 'Bearer ' + accessToken, 'Content-Type': 'application/json' }, body: conteudo }
+      );
+    }
+    setStatus('connected', 'Drive conectado · Salvo agora');
+  } catch(e) {
+    setStatus('error', 'Erro ao salvar no Drive');
+  }
+}
+
+async function sincronizarDrive() {
+  if (!driveReady) return;
+  setStatus('syncing', 'Sincronizando...');
+  driveFileId = null;
+  await carregarDoDrive();
+}
+
+// ── App logic ──
 function showTab(t) {
   ['list','editor','view'].forEach(x => {
     document.getElementById('panel-' + x).classList.toggle('active', x === t);
@@ -454,36 +465,33 @@ function renderList() {
     e.enunciado.toLowerCase().includes(q) || (e.resposta || '').toLowerCase().includes(q)
   ).sort((a, b) => (b.updated || 0) - (a.updated || 0));
   if (!filtered.length) {
-    body.innerHTML = '<div class="empty">Nenhuma pergunta encontrada.<br>Clique em "+ Nova" para começar a montar seu caderno.</div>';
+    body.innerHTML = '<div class="empty">Nenhuma pergunta encontrada.<br>Clique em "+ Nova" para começar.</div>';
     return;
   }
   body.innerHTML = filtered.map(e => `
     <div class="card" onclick="openEntry('${e.id}')">
       <div class="card-title">${esc(e.title) || '(sem título)'}</div>
-      <div class="card-preview">${esc(e.enunciado).slice(0, 120)}${e.enunciado.length > 120 ? '…' : ''}</div>
+      <div class="card-preview">${esc(e.enunciado).slice(0,120)}${e.enunciado.length>120?'…':''}</div>
       <div class="card-meta">
         ${renderTags(e.tag)}
-        <span class="badge ${e.resposta ? 'badge-ok' : 'badge-pend'}">${e.resposta ? 'respondida' : 'sem resposta'}</span>
-        <span>${new Date(e.updated || e.created).toLocaleDateString('pt-BR')}</span>
+        <span class="badge ${e.resposta?'badge-ok':'badge-pend'}">${e.resposta?'respondida':'sem resposta'}</span>
+        <span>${new Date(e.updated||e.created).toLocaleDateString('pt-BR')}</span>
       </div>
     </div>`).join('');
 }
 
-function esc(s) { return (s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+function esc(s) { return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
 function openEntry(id) {
   const e = entries.find(x => x.id === id);
   if (!e) return;
   currentId = id;
   document.getElementById('vTitle').textContent = e.title || '(sem título)';
-  document.getElementById('vTag').innerHTML =
-    renderTags(e.tag) +
+  document.getElementById('vTag').innerHTML = renderTags(e.tag) +
     (e.resposta ? `<span class="badge badge-ok">respondida</span>` : `<span class="badge badge-pend">sem resposta</span>`);
-  document.getElementById('vEnunciado').innerHTML = esc(e.enunciado).replace(/
-/g, '<br>');
+  document.getElementById('vEnunciado').innerHTML = esc(e.enunciado).replace(/\n/g,'<br>');
   document.getElementById('vResposta').innerHTML = e.resposta
-    ? esc(e.resposta).replace(/
-/g, '<br>')
+    ? esc(e.resposta).replace(/\n/g,'<br>')
     : '<span style="color:var(--text-faint)">Sem resposta cadastrada.</span>';
   document.getElementById('viewEmpty').style.display = 'none';
   document.getElementById('viewWrap').style.display = 'flex';
@@ -513,10 +521,10 @@ function editCurrent() {
 }
 
 function saveEntry() {
-  const title = document.getElementById('editTitle').value.trim();
-  const tag = document.getElementById('editTag').value.trim();
+  const title    = document.getElementById('editTitle').value.trim();
+  const tag      = document.getElementById('editTag').value.trim();
   const enunciado = document.getElementById('editEnunciado').value.trim();
-  const resposta = document.getElementById('editResposta').value.trim();
+  const resposta  = document.getElementById('editResposta').value.trim();
   if (!enunciado) { toast('Adicione um enunciado.'); return; }
   if (currentId) {
     const e = entries.find(x => x.id === currentId);
@@ -526,7 +534,8 @@ function saveEntry() {
     entries.push({ id, title, tag, enunciado, resposta, created: Date.now(), updated: Date.now() });
     currentId = id;
   }
-  persist();
+  salvarLocal();
+  salvarNoDrive();
   toast('Salvo!');
   openEntry(currentId);
 }
@@ -535,17 +544,13 @@ function deleteEntry() {
   if (!currentId || !confirm('Excluir esta pergunta?')) return;
   entries = entries.filter(x => x.id !== currentId);
   currentId = null;
-  persist();
+  salvarLocal();
+  salvarNoDrive();
   document.getElementById('viewEmpty').style.display = '';
   document.getElementById('viewWrap').style.display = 'none';
   document.getElementById('viewActions').style.display = 'none';
   showTab('list');
   toast('Excluído.');
-}
-
-function persist() {
-  localStorage.setItem('qr_entries', JSON.stringify(entries));
-  if (driveReady) syncToDrive();
 }
 
 function printCurrent() { window.print(); }

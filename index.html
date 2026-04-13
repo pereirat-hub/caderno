@@ -115,6 +115,7 @@ textarea::placeholder{color:var(--text-faint)}
   .view-left,.view-right{page-break-inside:avoid}
 }
 </style>
+<script src="https://accounts.google.com/gsi/client" async></script>
 </head>
 <body>
 <div class="app">
@@ -234,8 +235,6 @@ textarea::placeholder{color:var(--text-faint)}
   </div>
 </div>
 
-<script src="https://accounts.google.com/gsi/client" async></script>
-<script src="https://apis.google.com/js/api.js" async></script>
 <script>
 const CLIENT_ID = '178420623621-k8j1oq63advvpq3qjko5ru95574ju9nu.apps.googleusercontent.com';
 const SCOPES = 'https://www.googleapis.com/auth/drive.file';
@@ -257,13 +256,21 @@ window.onload = function() {
 
 function initGIS() {
   const tryInit = () => {
-    if (typeof google === 'undefined' || !google.accounts) { setTimeout(tryInit, 300); return; }
+    if (typeof google === 'undefined' || !google.accounts || !google.accounts.oauth2) {
+      setTimeout(tryInit, 300);
+      return;
+    }
     tokenClient = google.accounts.oauth2.initTokenClient({
       client_id: CLIENT_ID,
       scope: SCOPES,
       callback: onTokenReceived,
     });
-    tokenClient.requestAccessToken({ prompt: '' });
+    // Tenta silencioso só se já autorizou antes
+    if (userEmail) {
+      tokenClient.requestAccessToken({ prompt: '' });
+    } else {
+      updateDriveUI('disconnected');
+    }
   };
   tryInit();
 }
@@ -301,17 +308,21 @@ function handleDriveClick() {
     document.getElementById('connectedUser').textContent = 'Conectado como: ' + (userEmail || 'Conta Google');
     document.getElementById('disconnectOverlay').style.display = 'flex';
   } else {
-    if (tokenClient) {
-      tokenClient.requestAccessToken({ prompt: 'consent' });
-    } else {
-      document.getElementById('driveOverlay').style.display = 'flex';
-    }
+    document.getElementById('driveOverlay').style.display = 'flex';
   }
 }
 
 function signInWithGoogle() {
   closeDriveModal();
-  if (tokenClient) tokenClient.requestAccessToken({ prompt: 'consent' });
+  if (tokenClient) {
+    tokenClient.requestAccessToken({ prompt: 'consent' });
+  } else {
+    // lib ainda carregando, tenta em 500ms
+    setTimeout(() => {
+      if (tokenClient) tokenClient.requestAccessToken({ prompt: 'consent' });
+      else toast('Erro ao carregar lib do Google. Recarregue a página.');
+    }, 500);
+  }
 }
 
 function closeDriveModal() { document.getElementById('driveOverlay').style.display = 'none'; }

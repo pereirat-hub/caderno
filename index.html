@@ -16,7 +16,7 @@
   --green:#1A5C3A;--green-light:#EBF5EF;
   --radius:10px;--radius-sm:6px;
 }
-body{font-family:'DM Sans',sans-serif;color:var(--text);background:var(--bg);height:100vh;display:flex;flex-direction:column;overflow:hidden}
+body{font-family:'DM Sans',sans-serif;color:var(--text);background:var(--bg);height:100vh;display:flex;flex-direction:column}
 .app{display:flex;flex-direction:column;height:100vh;position:relative}
 .topbar{display:flex;align-items:center;justify-content:space-between;padding:11px 18px;background:var(--accent);gap:8px;flex-wrap:wrap}
 .topbar-title{font-family:'Lora',serif;font-size:16px;font-weight:600;color:#fff}
@@ -86,7 +86,7 @@ textarea::placeholder{color:var(--text-faint)}
 .view-resposta{font-size:14px;line-height:1.85;color:var(--text);text-align:justify}
 .view-empty{display:flex;align-items:center;justify-content:center;flex:1;color:var(--text-faint);font-size:13px;background:var(--bg)}
 .view-actions{padding:12px 18px;border-top:1px solid var(--border);display:flex;gap:8px;background:var(--surface)}
-.overlay{position:fixed;inset:0;background:rgba(0,0,0,.35);display:flex;align-items:center;justify-content:center;z-index:99}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.35);display:flex;align-items:center;justify-content:center;z-index:9999}
 .modal{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;max-width:420px;width:90%;border-top:3px solid var(--accent)}
 .modal h2{font-family:'Lora',serif;font-size:17px;font-weight:600;margin-bottom:8px;color:var(--accent)}
 .modal p{font-size:13px;color:var(--text-muted);line-height:1.65;margin-bottom:16px}
@@ -195,10 +195,10 @@ textarea::placeholder{color:var(--text-faint)}
         <button class="btn" onclick="showTab('list')">← Voltar</button>
       </div>
     </div>
-  </div>
+</div>
 
-  <!-- Modal: conectar -->
-  <div class="overlay" id="driveOverlay" style="display:none">
+<!-- Modal: conectar -->
+<div class="overlay" id="driveOverlay" style="display:none">
     <div class="modal">
       <h2>Conectar ao Google Drive</h2>
       <p>Você será redirecionado para o login do Google. Funciona em qualquer navegador.</p>
@@ -218,8 +218,8 @@ textarea::placeholder{color:var(--text-faint)}
     </div>
   </div>
 
-  <!-- Modal: gerenciar -->
-  <div class="overlay" id="disconnectOverlay" style="display:none">
+<!-- Modal: gerenciar -->
+<div class="overlay" id="disconnectOverlay" style="display:none">
     <div class="modal">
       <h2>Google Drive conectado</h2>
       <p id="connectedUser" style="margin-bottom:14px;font-size:13px;color:var(--text-muted)"></p>
